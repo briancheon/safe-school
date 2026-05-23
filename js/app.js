@@ -136,19 +136,17 @@ function _mountSetup() {
     const end   = endSearch.getSelected()   || savedRoute?.end   || null;
 
     if (start && end) {
-      const submitBtn = document.querySelector('[type=submit][form=setup-form], #setup-form [type=submit]');
-      submitBtn.textContent = '경로 계산 중… 🗺';
-      submitBtn.disabled = true;
+      const submitBtn = document.querySelector('button[type=submit]');
+      if (submitBtn) { submitBtn.textContent = '경로 계산 중… 🗺'; submitBtn.disabled = true; }
 
       try {
         const routePoints = await fetchPedestrianRoute(start, end);
         _saveRoute({ start, end, points: routePoints });
       } catch {
-        _saveRoute({ start, end, points: null }); // falls back to straight line
+        _saveRoute({ start, end, points: null });
       }
 
-      submitBtn.textContent = '🚶 등교 시작하기 →';
-      submitBtn.disabled = false;
+      if (submitBtn) { submitBtn.textContent = '🚶 등교 시작하기 →'; submitBtn.disabled = false; }
     }
 
     _showPermissionModal();
