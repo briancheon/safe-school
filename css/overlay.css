@@ -1,0 +1,86 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-danger);
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.overlay.active {
+  opacity: 1;
+}
+
+.overlay.exiting {
+  animation: overlayExit 300ms ease forwards;
+}
+
+@keyframes overlayExit {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(-100%); opacity: 0; }
+}
+
+.overlay__icon {
+  font-size: 80px;
+  animation: walkBounce 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes walkBounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-8px); }
+}
+
+.overlay__warning {
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.1;
+  animation: blink var(--blink-speed) step-start infinite;
+  padding: 0 var(--space-6);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.overlay__sub {
+  color: rgba(255,255,255,0.85);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  text-align: center;
+}
+
+.overlay__emergency {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-white);
+  color: var(--color-danger);
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-white);
+  text-decoration: none;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.3), 0 0 0 8px rgba(255,255,255,0.1);
+  animation: emergencyPulse 2s ease infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.overlay__emergency:active {
+  transform: scale(0.96);
+}
+
+@keyframes emergencyPulse {
+  0%   { box-shadow: 0 0 0 4px rgba(255,255,255,0.3), 0 0 0 8px rgba(255,255,255,0.1); }
+  50%  { box-shadow: 0 0 0 8px rgba(255,255,255,0.4), 0 0 0 16px rgba(255,255,255,0.15); }
+  100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.3), 0 0 0 8px rgba(255,255,255,0.1); }
+}

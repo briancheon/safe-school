@@ -1,0 +1,5 @@
+<svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="신호등 없는 횡단보도">
+  <path d="M20 0C9 0 0 9 0 20C0 32 20 52 20 52C20 52 40 32 40 20C40 9 31 0 20 0Z"
+        fill="#4361EE" stroke="#1A1A2E" stroke-width="2"/>
+  <text x="20" y="26" text-anchor="middle" font-size="18" fill="white">🚶</text>
+</svg>

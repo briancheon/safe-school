@@ -1,0 +1,28 @@
+<div class="map-screen">
+
+  <!-- Status bar (sticky, overlays the map) -->
+  <div class="map-statusbar" role="status">
+    <div class="map-statusbar__distance">
+      <span id="school-distance">🏫 학교까지 계산 중…</span>
+    </div>
+    <div class="map-statusbar__right">
+      <span class="map-statusbar__time" id="elapsed-time">⏱ 00:00</span>
+      <span class="map-statusbar__mode map-statusbar__mode--safe" id="status-mode">🛡 안전</span>
+    </div>
+  </div>
+
+  <!-- Map fills remaining viewport -->
+  <div class="map-container">
+    <div id="kakao-map" style="width:100%;height:100%"></div>
+  </div>
+
+  <!-- Next hazard chip (slides up from bottom) -->
+  <div class="hazard-chip" id="hazard-chip" aria-live="polite" aria-atomic="true">
+    <div class="hazard-chip__icon">⚠️</div>
+    <div class="hazard-chip__info">
+      <div class="hazard-chip__title">위험 구역</div>
+      <div class="hazard-chip__dist">주의 구역 진입!</div>
+    </div>
+  </div>
+
+</div>

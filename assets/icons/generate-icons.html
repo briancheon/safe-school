@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<canvas id="c192" width="192" height="192"></canvas>
+<canvas id="c512" width="512" height="512"></canvas>
+<script>
+function drawIcon(canvas) {
+  const ctx = canvas.getContext('2d');
+  const s = canvas.width;
+  const r = s / 2;
+
+  // Background
+  ctx.fillStyle = '#F5F0E8';
+  ctx.beginPath();
+  ctx.roundRect(0, 0, s, s, s * 0.2);
+  ctx.fill();
+
+  // Shield
+  ctx.fillStyle = '#1B4332';
+  const sp = s * 0.12;
+  ctx.beginPath();
+  ctx.moveTo(r, sp);
+  ctx.lineTo(sp, s * 0.3);
+  ctx.lineTo(sp, s * 0.6);
+  ctx.quadraticCurveTo(sp, s * 0.88, r, s - sp);
+  ctx.quadraticCurveTo(s - sp, s * 0.88, s - sp, s * 0.6);
+  ctx.lineTo(s - sp, s * 0.3);
+  ctx.closePath();
+  ctx.fill();
+
+  // Inner shield
+  ctx.fillStyle = '#40916C';
+  const ip = s * 0.18;
+  ctx.beginPath();
+  ctx.moveTo(r, ip);
+  ctx.lineTo(ip, s * 0.32);
+  ctx.lineTo(ip, s * 0.58);
+  ctx.quadraticCurveTo(ip, s * 0.83, r, s - ip);
+  ctx.quadraticCurveTo(s - ip, s * 0.83, s - ip, s * 0.58);
+  ctx.lineTo(s - ip, s * 0.32);
+  ctx.closePath();
+  ctx.fill();
+
+  // Walking figure
+  ctx.fillStyle = '#FFD166';
+  ctx.beginPath();
+  ctx.arc(r, s * 0.35, s * 0.08, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#FFD166';
+  ctx.lineWidth = s * 0.04;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(r, s * 0.43);
+  ctx.lineTo(r - s*0.06, s * 0.62);
+  ctx.moveTo(r, s * 0.43);
+  ctx.lineTo(r + s*0.06, s * 0.62);
+  ctx.moveTo(r - s*0.02, s * 0.52);
+  ctx.lineTo(r - s*0.12, s * 0.57);
+  ctx.moveTo(r + s*0.02, s * 0.5);
+  ctx.lineTo(r + s*0.12, s * 0.55);
+  ctx.stroke();
+
+  return canvas.toDataURL('image/png');
+}
+
+const c192 = document.getElementById('c192');
+const c512 = document.getElementById('c512');
+const url192 = drawIcon(c192);
+const url512 = drawIcon(c512);
+
+// Show download links
+document.body.innerHTML += `
+  <br><a href="${url192}" download="icon-192.png">Download icon-192.png</a><br>
+  <a href="${url512}" download="icon-512.png">Download icon-512.png</a>
+`;
+</script>
+</body>
+</html>

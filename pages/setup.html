@@ -1,0 +1,88 @@
+<div class="setup-screen bg-dotted">
+
+  <div class="setup-screen__hero">
+    <svg class="setup-screen__logo" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Shield body -->
+      <path d="M40 6 L10 18 L10 44 C10 60 40 76 40 76 C40 76 70 60 70 44 L70 18 Z"
+            fill="#1B4332" stroke="#1A1A2E" stroke-width="2"/>
+      <!-- Shield inner -->
+      <path d="M40 14 L17 24 L17 44 C17 57 40 70 40 70 C40 70 63 57 63 44 L63 24 Z"
+            fill="#40916C"/>
+      <!-- Walking child silhouette -->
+      <circle cx="40" cy="26" r="6" fill="#FFD166" stroke="#1A1A2E" stroke-width="1.5"/>
+      <path d="M40 32 L38 48 M40 32 L42 48 M38 40 L33 44 M40 38 L45 42"
+            stroke="#FFD166" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- School building -->
+      <path d="M28 62 L28 72 L52 72 L52 62 L40 54 Z" fill="#FFD166" stroke="#1A1A2E" stroke-width="1.5"/>
+      <rect x="36" y="64" width="8" height="8" fill="#1B4332"/>
+    </svg>
+
+    <h1 class="setup-screen__title">안전 등교<br>도우미</h1>
+    <p class="setup-screen__subtitle">스몸비 없는 안전한 등굣길 🚶</p>
+  </div>
+
+  <form class="setup-screen__form" id="setup-form" novalidate>
+
+    <div class="form-group">
+      <label for="student-name">이름</label>
+      <input
+        class="input"
+        type="text"
+        id="student-name"
+        name="name"
+        placeholder="이름을 입력하세요"
+        maxlength="20"
+        required
+        autocomplete="name"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="school-name">학교 이름</label>
+      <input
+        class="input"
+        type="text"
+        id="school-name"
+        name="school"
+        placeholder="학교 이름"
+        maxlength="30"
+        required
+        autocomplete="organization"
+      >
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="grade">학년</label>
+        <select class="input" id="grade" name="grade" required>
+          <option value="1">1학년</option>
+          <option value="2">2학년</option>
+          <option value="3" selected>3학년</option>
+          <option value="4">4학년</option>
+          <option value="5">5학년</option>
+          <option value="6">6학년</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="class-num">반</label>
+        <select class="input" id="class-num" name="classNum" required>
+          <option value="1">1반</option>
+          <option value="2">2반</option>
+          <option value="3">3반</option>
+          <option value="4">4반</option>
+          <option value="5">5반</option>
+          <option value="6">6반</option>
+        </select>
+      </div>
+    </div>
+
+  </form>
+
+  <div class="setup-screen__actions">
+    <button type="submit" form="setup-form" class="btn btn-primary btn--full">
+      🚶 등교 시작하기 →
+    </button>
+  </div>
+
+</div>

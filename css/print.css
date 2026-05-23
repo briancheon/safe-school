@@ -1,0 +1,39 @@
+@media print {
+  body > *:not(#screen) { display: none !important; }
+
+  #screen > *:not(.certificate-print-root) { display: none !important; }
+
+  .certificate-print-root {
+    display: block !important;
+    width: 297mm;
+    height: 210mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  .certificate-frame-outer {
+    width: 100% !important;
+    max-width: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .certificate-frame-outer canvas {
+    width: 297mm !important;
+    height: 210mm !important;
+  }
+
+  .reward-screen__header,
+  .reward-screen__actions,
+  .certificate-wrapper__badge,
+  .certificate-wrapper__title,
+  .certificate-wrapper__desc {
+    display: none !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+}

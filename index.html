@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1B4332">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="안전 등교">
+  <meta name="description" content="스몸비 방지 안전 등교 도우미 — 어린이 보행 안전 웹앱">
+  <title>안전 등교 도우미</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/overlay.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/reward.css">
+  <link rel="stylesheet" href="css/print.css">
+
+  <!-- Replace YOUR_KAKAO_KEY with a real Kakao Map Web API key from https://developers.kakao.com -->
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY&autoload=false"></script>
+</head>
+<body>
+  <div id="screen" role="main"></div>
+  <div id="overlay-container" aria-live="assertive" aria-atomic="true"></div>
+  <div id="modal-container"></div>
+  <div id="permission-modal-container"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

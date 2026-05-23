@@ -1,0 +1,72 @@
+:root {
+  /* ── Palette ─────────────────────────────────────────── */
+  --color-bg:           #F5F0E8;
+  --color-surface:      #FFFFFF;
+  --color-primary:      #1B4332;
+  --color-primary-lt:   #40916C;
+  --color-accent:       #FFD166;
+  --color-accent-dark:  #F4A62A;
+  --color-danger:       #EF233C;
+  --color-danger-dark:  #B5001F;
+  --color-text:         #1A1A2E;
+  --color-text-muted:   #6B7280;
+  --color-border:       #D1C9B8;
+  --color-white:        #FFFFFF;
+
+  /* ── Marker Colors ───────────────────────────────────── */
+  --marker-parking:     #F72585;
+  --marker-crossing:    #4361EE;
+  --marker-corner:      #FB8500;
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-display: 'Gaegu', 'Noto Sans KR', sans-serif;
+  --font-body:    'Noto Sans KR', sans-serif;
+
+  /* Font sizes */
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  2rem;
+  --text-3xl:  2.75rem;
+  --text-hero: 4rem;
+
+  /* ── Spacing ─────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Radius ──────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   32px;
+  --radius-full: 9999px;
+
+  /* ── Shadows (neobrutalist hard shadow) ──────────────── */
+  --shadow-sm:  2px 3px 0px #1A1A2E;
+  --shadow-md:  4px 5px 0px #1A1A2E;
+  --shadow-lg:  6px 7px 0px #1A1A2E;
+  --shadow-xl:  8px 9px 0px #1A1A2E;
+
+  /* ── Motion ──────────────────────────────────────────── */
+  --transition-fast:   120ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+  --blink-speed:       800ms;
+
+  /* ── Z-index layers ──────────────────────────────────── */
+  --z-map:      0;
+  --z-markers:  10;
+  --z-modal:    100;
+  --z-overlay:  200;
+  --z-toast:    300;
+}

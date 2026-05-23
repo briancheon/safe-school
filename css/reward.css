@@ -1,0 +1,102 @@
+.certificate-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+  padding: var(--space-6);
+  animation: fadeIn 0.4s ease;
+}
+
+.certificate-wrapper__badge {
+  font-size: 56px;
+  animation: bounceIn 0.6s ease;
+}
+
+.certificate-wrapper__title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.certificate-wrapper__desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.certificate-frame-outer {
+  width: 100%;
+  max-width: 520px;
+  border: 3px solid var(--color-text);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn 0.5s ease;
+}
+
+.certificate-frame-outer canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.locked-state {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.locked-state__icon {
+  font-size: 56px;
+}
+
+.locked-state__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.locked-state__desc {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.locked-state__progress {
+  width: 100%;
+}
+
+.locked-progress-bar {
+  height: 16px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 2px solid var(--color-text);
+}
+
+.locked-progress-bar__fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 1s ease;
+}
+
+.locked-progress-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
