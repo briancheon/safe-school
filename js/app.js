@@ -136,7 +136,7 @@ function _mountSetup() {
     const end   = endSearch.getSelected()   || savedRoute?.end   || null;
 
     if (start && end) {
-      const submitBtn = form.querySelector('[type=submit]');
+      const submitBtn = document.querySelector('[type=submit][form=setup-form], #setup-form [type=submit]');
       submitBtn.textContent = '경로 계산 중… 🗺';
       submitBtn.disabled = true;
 
