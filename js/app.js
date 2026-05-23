@@ -2,17 +2,19 @@ import { requestMotionPermission, startMotionDetection, stopMotionDetection, sim
 import { startGeofencing, stopGeofencing, setDangerZones, simulatePosition, setSchoolGate, setRoutePolyline } from './geofence.js';
 import { initMap, highlightZone, setRouteCoords, generateRouteZones, getEndCoord, getRoutePoints } from './map.js';
 import { speak } from './speech.js';
-import { initPoints, cleanupPoints, finalizeSession, getSessionScore, getCumulativeScore, getCertificateUnlocked } from './points.js';
+import { initPoints, cleanupPoints, finalizeSession, getCumulativeScore, getCertificateUnlocked } from './points.js';
 import { renderCertificate } from './certificate.js';
 import { initLocationSearch } from './location-search.js';
 import { fetchPedestrianRoute } from './routing.js';
-import { LS_KEY_STUDENT, LS_KEY_ROUTE, SCHOOL_GATE, SAFE_ROUTE } from './config.js';
+import { haversine } from './utils.js';
+import { LS_KEY_STUDENT, LS_KEY_ROUTE } from './config.js';
 
 let _dangerZones = [];
 let _mapInitialized = false;
 let _overlayActive = false;
 let _walkStartTime = null;
 let _elapsedInterval = null;
+let _submitting = false;
 
 // ── Bootstrap ────────────────────────────────────────────
 
@@ -121,8 +123,14 @@ function _mountSetup() {
     document.getElementById('end-chip-text').textContent = savedRoute.end.name;
   }
 
+  // Capture the submit button now (it's outside the <form> but in the DOM)
+  const submitBtn = document.querySelector('button[type=submit][form=setup-form]')
+    || document.querySelector('.setup-screen__actions button[type=submit]');
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (_submitting) return;
+    _submitting = true;
 
     const student = {
       name:     document.getElementById('student-name')?.value.trim() || '학생',
@@ -136,7 +144,6 @@ function _mountSetup() {
     const end   = endSearch.getSelected()   || savedRoute?.end   || null;
 
     if (start && end) {
-      const submitBtn = document.querySelector('button[type=submit]');
       if (submitBtn) { submitBtn.textContent = '경로 계산 중… 🗺'; submitBtn.disabled = true; }
 
       try {
@@ -149,12 +156,14 @@ function _mountSetup() {
       if (submitBtn) { submitBtn.textContent = '🚶 등교 시작하기 →'; submitBtn.disabled = false; }
     }
 
+    _submitting = false;
     _showPermissionModal();
   });
 }
 
 function _showPermissionModal() {
   const container = document.getElementById('permission-modal-container');
+  if (!container) { location.hash = '#map'; return; }
   container.innerHTML = `
     <div class="permission-modal-backdrop" id="perm-backdrop">
       <div class="permission-modal" role="dialog" aria-modal="true" aria-labelledby="perm-title">
@@ -235,6 +244,7 @@ function _startElapsedTimer() {
 
 function _openZoneModal(zone) {
   const container = document.getElementById('modal-container');
+  if (!container) return;
   const placeholderClass = {
     'illegal-parking':    'modal__image-placeholder--parking',
     'unsignaled-crossing':'modal__image-placeholder--crossing',
@@ -425,7 +435,7 @@ function _renderLockedState(cumulative) {
   const frameOuter = document.getElementById('certificate-frame-outer');
   if (frameOuter) {
     const pct = Math.min(100, (cumulative / 1000) * 100);
-    frameOuter.outerHTML = `
+    frameOuter.innerHTML = `
       <div class="locked-state">
         <div class="locked-state__icon">🔒</div>
         <div class="locked-state__title">상장 잠금 중</div>
@@ -481,39 +491,20 @@ function _onSchoolArrival() {
 
 function _onPositionUpdate(e) {
   const { lat, lng } = e.detail;
-  const { haversine } = _lazyImportUtils();
   const end = getEndCoord();
   const dist = Math.round(haversine(lat, lng, end.lat, end.lng));
   const distEl = document.getElementById('school-distance');
   if (distEl) distEl.textContent = `🏫 학교까지 ${dist}m`;
 }
 
-// Lazy-load utils to avoid circular dependency issues at startup
-let _utilsCache = null;
-function _lazyImportUtils() {
-  if (!_utilsCache) {
-    // Already imported via static import in geofence.js; re-implement inline for distance display
-    _utilsCache = {
-      haversine(lat1, lng1, lat2, lng2) {
-        const R = 6_371_000;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLng = (lng2 - lng1) * Math.PI / 180;
-        const a = Math.sin(dLat/2)**2 +
-          Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      }
-    };
-  }
-  return _utilsCache;
-}
-
 // ── Overlay ───────────────────────────────────────────────
 
 function _showOverlay() {
   if (_overlayActive) return;
+  const container = document.getElementById('overlay-container');
+  if (!container) return;
   _overlayActive = true;
 
-  const container = document.getElementById('overlay-container');
   container.innerHTML = `
     <div class="overlay" id="walking-overlay">
       <div class="overlay__icon" aria-hidden="true">🚶</div>
@@ -622,7 +613,8 @@ function _renderSimPanel() {
   });
 
   document.getElementById('sim-arrive').addEventListener('click', () => {
-    simulatePosition(SCHOOL_GATE.lat, SCHOOL_GATE.lng);
+    const end = getEndCoord();
+    simulatePosition(end.lat, end.lng);
   });
 }
 

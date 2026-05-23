@@ -1,11 +1,12 @@
+const _NULL_SEARCH = { getSelected: () => null, setValue: () => {} };
+
 export function initLocationSearch({ inputId, onSelect, placeholder }) {
   const input = document.getElementById(inputId);
-  if (!input) return;
+  if (!input) return _NULL_SEARCH; // safe fallback so callers never crash
 
   input.placeholder = placeholder || '장소를 검색하세요';
   input.setAttribute('autocomplete', 'off');
 
-  // Wrap input so we can position the dropdown relative to it
   const wrap = input.parentNode;
   wrap.style.position = 'relative';
 
@@ -16,7 +17,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
 
   let _debounceTimer = null;
   let _selected = null;
-  let _ps = null; // kakao.maps.services.Places instance
+  let _ps = null;
 
   function _getPlaces() {
     if (_ps) return Promise.resolve(_ps);
@@ -58,8 +59,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
       const ps = await _getPlaces();
       ps.keywordSearch(keyword, (results, status) => {
         if (status !== kakao.maps.services.Status.OK || !results.length) {
-          _showEmpty();
-          return;
+          _showEmpty(); return;
         }
         _render(results.slice(0, 8));
       });
@@ -70,7 +70,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
 
   function _render(results) {
     dropdown.innerHTML = '';
-    results.forEach((r, i) => {
+    results.forEach(r => {
       const li = document.createElement('li');
       li.className = 'loc-dropdown__item';
       li.setAttribute('role', 'option');
@@ -83,7 +83,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
           <span class="loc-dropdown__name">${_esc(r.place_name)}</span>
           <span class="loc-dropdown__addr">${_esc(r.road_address_name || r.address_name || '')}</span>
         </span>
-        <span class="loc-dropdown__category">${_esc(_shortCategory(r.category_name))}</span>
+        <span class="loc-dropdown__category">${_esc(_shortCat(r.category_name))}</span>
       `;
       li.addEventListener('mousedown', (e) => { e.preventDefault(); _pick(li); });
       dropdown.appendChild(li);
@@ -103,7 +103,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
 
   function _activate(items, idx) {
     items.forEach(el => el.classList.remove('loc-dropdown__item--active'));
-    if (items[idx]) { items[idx].classList.add('loc-dropdown__item--active'); }
+    if (items[idx]) items[idx].classList.add('loc-dropdown__item--active');
   }
 
   function _showEmpty() {
@@ -112,7 +112,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
   }
 
   function _showFallback() {
-    dropdown.innerHTML = `<li class="loc-dropdown__empty">지도 서비스 연결 중… 잠시 후 다시 시도하세요</li>`;
+    dropdown.innerHTML = `<li class="loc-dropdown__empty">지도 서비스 준비 중… 잠시 후 다시 시도하세요</li>`;
     dropdown.classList.add('open');
   }
 
@@ -121,7 +121,7 @@ export function initLocationSearch({ inputId, onSelect, placeholder }) {
     dropdown.innerHTML = '';
   }
 
-  function _shortCategory(cat) {
+  function _shortCat(cat) {
     if (!cat) return '';
     const last = cat.split('>').pop().trim();
     return last.length > 8 ? last.slice(0, 8) + '…' : last;
