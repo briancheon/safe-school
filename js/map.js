@@ -29,6 +29,9 @@ export function initMap(containerId, zones, onMarkerClick) {
       level: 4,
     });
 
+    // Force relayout after browser finishes rendering the container
+    setTimeout(() => { if (_map) _map.relayout(); }, 300);
+
     _drawSafeRoute();
     _addSchoolMarker();
     _addDangerMarkers(zones, onMarkerClick);
