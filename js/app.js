@@ -205,6 +205,7 @@ async function _mountMap() {
 
     // Apply saved route — real Tmap points if available, else straight-line fallback
     const savedRoute = _loadRoute();
+    console.log('[app] savedRoute points:', savedRoute?.points?.length ?? 'null');
     if (savedRoute?.start && savedRoute?.end) {
       setRouteCoords(savedRoute.start, savedRoute.end, savedRoute.points || null);
     }

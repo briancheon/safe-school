@@ -140,6 +140,7 @@ function _interpolateRoute(start, end, numSegments) {
 
 function _drawSafeRoute() {
   const route = getRoutePoints();
+  console.log('[map] _drawSafeRoute points:', route.length, route[0], route[route.length - 1]);
   const path = route.map(p => new kakao.maps.LatLng(p.lat, p.lng));
   new kakao.maps.Polyline({
     path,
