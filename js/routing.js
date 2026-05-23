@@ -29,6 +29,7 @@ export async function fetchPedestrianRoute(start, end) {
   if (!res.ok) throw new Error(`Tmap ${res.status}`);
 
   const data = await res.json();
+  console.log('[Tmap] raw response:', JSON.stringify(data).slice(0, 500));
 
   // Flatten all LineString coordinates into {lat, lng} points
   const points = [];
@@ -40,5 +41,6 @@ export async function fetchPedestrianRoute(start, end) {
     }
   }
 
+  console.log('[Tmap] parsed points:', points.length, points[0], points[points.length - 1]);
   return points.length > 1 ? points : null;
 }

@@ -148,8 +148,10 @@ function _mountSetup() {
 
       try {
         const routePoints = await fetchPedestrianRoute(start, end);
+        console.log('[app] routePoints count:', routePoints?.length ?? 0);
         _saveRoute({ start, end, points: routePoints });
-      } catch {
+      } catch (err) {
+        console.error('[app] fetchPedestrianRoute failed:', err);
         _saveRoute({ start, end, points: null });
       }
 
