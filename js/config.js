@@ -39,3 +39,4 @@ export const EMERGENCY_NUMBER = '112';
 // localStorage keys
 export const LS_KEY_STUDENT  = 'ssw_student';
 export const LS_KEY_SESSIONS = 'ssw_sessions';
+export const LS_KEY_ROUTE    = 'ssw_route';

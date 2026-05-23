@@ -1,10 +1,11 @@
 import { requestMotionPermission, startMotionDetection, stopMotionDetection, simulateState } from './motion.js';
-import { startGeofencing, stopGeofencing, setDangerZones, simulatePosition } from './geofence.js';
-import { initMap, highlightZone } from './map.js';
+import { startGeofencing, stopGeofencing, setDangerZones, simulatePosition, setSchoolGate, setRoutePolyline } from './geofence.js';
+import { initMap, highlightZone, setRouteCoords, generateRouteZones, getEndCoord, getRoutePoints } from './map.js';
 import { speak } from './speech.js';
 import { initPoints, cleanupPoints, finalizeSession, getSessionScore, getCumulativeScore, getCertificateUnlocked } from './points.js';
 import { renderCertificate } from './certificate.js';
-import { LS_KEY_STUDENT, SCHOOL_GATE, SAFE_ROUTE } from './config.js';
+import { initLocationSearch } from './location-search.js';
+import { LS_KEY_STUDENT, LS_KEY_ROUTE, SCHOOL_GATE, SAFE_ROUTE } from './config.js';
 
 let _dangerZones = [];
 let _mapInitialized = false;
@@ -72,30 +73,69 @@ async function _onPageMounted(hash) {
 // ── Setup Screen ─────────────────────────────────────────
 
 function _mountSetup() {
-  const form   = document.getElementById('setup-form');
-  const nameEl = document.getElementById('student-name');
-  const schoolEl = document.getElementById('school-name');
+  const form = document.getElementById('setup-form');
 
-  // Restore saved values
+  // Restore saved student info
   const saved = _loadStudent();
   if (saved) {
-    if (nameEl)   nameEl.value   = saved.name   || '';
-    if (schoolEl) schoolEl.value = saved.school || '';
+    const nameEl  = document.getElementById('student-name');
     const gradeEl = document.getElementById('grade');
     const classEl = document.getElementById('class-num');
-    if (gradeEl) gradeEl.value = saved.grade    || '1';
+    if (nameEl)  nameEl.value  = saved.name     || '';
+    if (gradeEl) gradeEl.value = saved.grade    || '3';
     if (classEl) classEl.value = saved.classNum || '1';
+  }
+
+  // Restore saved route
+  const savedRoute = _loadRoute();
+
+  // Init location search inputs
+  const startSearch = initLocationSearch({
+    inputId: 'start-input',
+    placeholder: '집 주소 또는 장소 검색',
+    onSelect: (loc) => {
+      document.getElementById('start-chip').style.display = '';
+      document.getElementById('start-chip-text').textContent = loc.name;
+    },
+  });
+
+  const endSearch = initLocationSearch({
+    inputId: 'end-input',
+    placeholder: '학교 이름 또는 주소 검색',
+    onSelect: (loc) => {
+      document.getElementById('end-chip').style.display = '';
+      document.getElementById('end-chip-text').textContent = loc.name;
+    },
+  });
+
+  // Restore previously saved route selections
+  if (savedRoute?.start) {
+    startSearch.setValue(savedRoute.start.name, savedRoute.start.lat, savedRoute.start.lng);
+    document.getElementById('start-chip').style.display = '';
+    document.getElementById('start-chip-text').textContent = savedRoute.start.name;
+  }
+  if (savedRoute?.end) {
+    endSearch.setValue(savedRoute.end.name, savedRoute.end.lat, savedRoute.end.lng);
+    document.getElementById('end-chip').style.display = '';
+    document.getElementById('end-chip-text').textContent = savedRoute.end.name;
   }
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const student = {
-      name:     document.getElementById('student-name')?.value.trim()   || '학생',
-      school:   document.getElementById('school-name')?.value.trim()    || '우리 초등학교',
-      grade:    document.getElementById('grade')?.value                 || '1',
-      classNum: document.getElementById('class-num')?.value             || '1',
+      name:     document.getElementById('student-name')?.value.trim() || '학생',
+      school:   endSearch.getSelected()?.name || savedRoute?.end?.name || '우리 초등학교',
+      grade:    document.getElementById('grade')?.value     || '3',
+      classNum: document.getElementById('class-num')?.value || '1',
     };
     _saveStudent(student);
+
+    // Save route coords (use saved if search wasn't re-done this session)
+    const start = startSearch.getSelected() || savedRoute?.start || null;
+    const end   = endSearch.getSelected()   || savedRoute?.end   || null;
+    if (start && end) _saveRoute({ start, end });
+
     _showPermissionModal();
   });
 }
@@ -138,7 +178,24 @@ function _showPermissionModal() {
 async function _mountMap() {
   if (!_mapInitialized) {
     _mapInitialized = true;
-    initMap('kakao-map', _dangerZones, _openZoneModal);
+
+    // Apply saved route coords if available
+    const savedRoute = _loadRoute();
+    if (savedRoute?.start && savedRoute?.end) {
+      setRouteCoords(savedRoute.start, savedRoute.end);
+    }
+
+    // Generate danger zones along the actual route
+    const zones = generateRouteZones();
+    _dangerZones = zones;
+    setDangerZones(zones);
+
+    // Update geofencing to use the real school gate coord
+    const endCoord = getEndCoord();
+    setSchoolGate(endCoord);
+    setRoutePolyline(getRoutePoints());
+
+    initMap('kakao-map', zones, _openZoneModal);
     startMotionDetection();
     startGeofencing();
     initPoints();
@@ -412,7 +469,8 @@ function _onSchoolArrival() {
 function _onPositionUpdate(e) {
   const { lat, lng } = e.detail;
   const { haversine } = _lazyImportUtils();
-  const dist = Math.round(haversine(lat, lng, SCHOOL_GATE.lat, SCHOOL_GATE.lng));
+  const end = getEndCoord();
+  const dist = Math.round(haversine(lat, lng, end.lat, end.lng));
   const distEl = document.getElementById('school-distance');
   if (distEl) distEl.textContent = `🏫 학교까지 ${dist}m`;
 }
@@ -558,17 +616,19 @@ function _renderSimPanel() {
 // ── LocalStorage helpers ──────────────────────────────────
 
 function _saveStudent(student) {
-  try {
-    localStorage.setItem(LS_KEY_STUDENT, JSON.stringify(student));
-  } catch { /* ignore */ }
+  try { localStorage.setItem(LS_KEY_STUDENT, JSON.stringify(student)); } catch { /* ignore */ }
 }
 
 function _loadStudent() {
-  try {
-    return JSON.parse(localStorage.getItem(LS_KEY_STUDENT) || 'null');
-  } catch {
-    return null;
-  }
+  try { return JSON.parse(localStorage.getItem(LS_KEY_STUDENT) || 'null'); } catch { return null; }
+}
+
+function _saveRoute(route) {
+  try { localStorage.setItem(LS_KEY_ROUTE, JSON.stringify(route)); } catch { /* ignore */ }
+}
+
+function _loadRoute() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY_ROUTE) || 'null'); } catch { return null; }
 }
 
 // ── Confetti ──────────────────────────────────────────────

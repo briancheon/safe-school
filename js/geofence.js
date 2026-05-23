@@ -14,6 +14,18 @@ let _deviationFlagged = false;
 let _arrived = false;
 let _lastPosition = null;
 
+// Dynamic overrides (set from app.js when user picks real coords)
+let _schoolGate   = null;
+let _routePolyline = null;
+
+export function setSchoolGate(coord) {
+  _schoolGate = coord;
+}
+
+export function setRoutePolyline(polyline) {
+  _routePolyline = polyline;
+}
+
 export function setDangerZones(zones) {
   _dangerZones = zones;
 }
@@ -69,7 +81,8 @@ function _onPosition(pos) {
 }
 
 function _checkSchoolArrival(lat, lng) {
-  const dist = haversine(lat, lng, SCHOOL_GATE.lat, SCHOOL_GATE.lng);
+  const gate = _schoolGate || SCHOOL_GATE;
+  const dist = haversine(lat, lng, gate.lat, gate.lng);
   if (dist <= SCHOOL_GATE_RADIUS) {
     _arrived = true;
     stopGeofencing();
@@ -96,7 +109,8 @@ function _checkDangerZones(lat, lng) {
 
 function _checkRouteDeviation(lat, lng) {
   if (_deviationFlagged) return;
-  const distFromRoute = distToPolyline(lat, lng, SAFE_ROUTE);
+  const route = _routePolyline || SAFE_ROUTE;
+  const distFromRoute = distToPolyline(lat, lng, route);
   if (distFromRoute > ROUTE_DEVIATION_MAX) {
     _deviationFlagged = true;
     document.dispatchEvent(

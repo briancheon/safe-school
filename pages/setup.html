@@ -2,17 +2,13 @@
 
   <div class="setup-screen__hero">
     <svg class="setup-screen__logo" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <!-- Shield body -->
       <path d="M40 6 L10 18 L10 44 C10 60 40 76 40 76 C40 76 70 60 70 44 L70 18 Z"
             fill="#1B4332" stroke="#1A1A2E" stroke-width="2"/>
-      <!-- Shield inner -->
       <path d="M40 14 L17 24 L17 44 C17 57 40 70 40 70 C40 70 63 57 63 44 L63 24 Z"
             fill="#40916C"/>
-      <!-- Walking child silhouette -->
       <circle cx="40" cy="26" r="6" fill="#FFD166" stroke="#1A1A2E" stroke-width="1.5"/>
       <path d="M40 32 L38 48 M40 32 L42 48 M38 40 L33 44 M40 38 L45 42"
             stroke="#FFD166" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- School building -->
       <path d="M28 62 L28 72 L52 72 L52 62 L40 54 Z" fill="#FFD166" stroke="#1A1A2E" stroke-width="1.5"/>
       <rect x="36" y="64" width="8" height="8" fill="#1B4332"/>
     </svg>
@@ -25,30 +21,8 @@
 
     <div class="form-group">
       <label for="student-name">이름</label>
-      <input
-        class="input"
-        type="text"
-        id="student-name"
-        name="name"
-        placeholder="이름을 입력하세요"
-        maxlength="20"
-        required
-        autocomplete="name"
-      >
-    </div>
-
-    <div class="form-group">
-      <label for="school-name">학교 이름</label>
-      <input
-        class="input"
-        type="text"
-        id="school-name"
-        name="school"
-        placeholder="학교 이름"
-        maxlength="30"
-        required
-        autocomplete="organization"
-      >
+      <input class="input" type="text" id="student-name" name="name"
+             placeholder="이름을 입력하세요" maxlength="20" required autocomplete="name">
     </div>
 
     <div class="form-row">
@@ -63,7 +37,6 @@
           <option value="6">6학년</option>
         </select>
       </div>
-
       <div class="form-group">
         <label for="class-num">반</label>
         <select class="input" id="class-num" name="classNum" required>
@@ -74,6 +47,36 @@
           <option value="5">5반</option>
           <option value="6">6반</option>
         </select>
+      </div>
+    </div>
+
+    <!-- Route section -->
+    <div style="border-top: 2px dashed var(--color-border); padding-top: var(--space-6);">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-text-muted);
+                  text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--space-4);">
+        🗺 등굣길 경로 설정
+      </div>
+
+      <div class="form-group">
+        <label for="start-input">📍 출발지 (집)</label>
+        <div class="location-search-wrap">
+          <input class="input" type="text" id="start-input"
+                 placeholder="집 주소 또는 장소 검색" autocomplete="off">
+        </div>
+        <div id="start-chip" style="display:none" class="location-selected-chip">
+          ✅ <span id="start-chip-text"></span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:var(--space-4)">
+        <label for="end-input">🏫 도착지 (학교)</label>
+        <div class="location-search-wrap">
+          <input class="input" type="text" id="end-input"
+                 placeholder="학교 이름 또는 주소 검색" autocomplete="off">
+        </div>
+        <div id="end-chip" style="display:none" class="location-selected-chip">
+          ✅ <span id="end-chip-text"></span>
+        </div>
       </div>
     </div>
 
