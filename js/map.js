@@ -87,18 +87,25 @@ export function initMap(containerId, zones, onMarkerClick) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const end = getEndCoord();
-    const center = new kakao.maps.LatLng(end.lat, end.lng);
+    // Centre on route midpoint so initial tiles load in the right area
+    const route = getRoutePoints();
+    const mid = route[Math.floor(route.length / 2)];
+    const center = new kakao.maps.LatLng(mid.lat, mid.lng);
     _map = new kakao.maps.Map(container, { center, level: 5 });
-
-    setTimeout(() => { if (_map) _map.relayout(); }, 300);
 
     _drawSafeRoute();
     _addStartMarker();
     _addSchoolMarker();
     _addDangerMarkers(zones, onMarkerClick);
-    _fitBoundsToRoute();
     _listenPositionUpdates();
+
+    // Fit bounds after map has had a chance to render
+    setTimeout(() => {
+      if (_map) {
+        _map.relayout();
+        _fitBoundsToRoute();
+      }
+    }, 300);
   });
 }
 
