@@ -1,4 +1,6 @@
 export const KAKAO_API_KEY = 'cc07f9499d84c9f7115d9b39155e00cc';
+// Get a free Tmap key at https://openapi.sk.com (1,000 req/day free)
+export const TMAP_API_KEY = 'YOUR_TMAP_KEY';
 
 // School gate (destination geofence center)
 export const SCHOOL_GATE = { lat: 37.5512, lng: 126.9882 };

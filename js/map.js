@@ -16,10 +16,13 @@ let _startCoord = null;
 let _endCoord   = null;
 let _routePoints = null; // computed polyline
 
-export function setRouteCoords(start, end) {
+export function setRouteCoords(start, end, realPoints = null) {
   _startCoord  = start;
   _endCoord    = end;
-  _routePoints = _interpolateRoute(start, end, 6);
+  // Use real Tmap pedestrian route if available, else interpolate straight line
+  _routePoints = (realPoints && realPoints.length > 1)
+    ? realPoints
+    : _interpolateRoute(start, end, 6);
 }
 
 export function getRoutePoints() {

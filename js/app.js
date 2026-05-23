@@ -5,6 +5,7 @@ import { speak } from './speech.js';
 import { initPoints, cleanupPoints, finalizeSession, getSessionScore, getCumulativeScore, getCertificateUnlocked } from './points.js';
 import { renderCertificate } from './certificate.js';
 import { initLocationSearch } from './location-search.js';
+import { fetchPedestrianRoute } from './routing.js';
 import { LS_KEY_STUDENT, LS_KEY_ROUTE, SCHOOL_GATE, SAFE_ROUTE } from './config.js';
 
 let _dangerZones = [];
@@ -131,10 +132,24 @@ function _mountSetup() {
     };
     _saveStudent(student);
 
-    // Save route coords (use saved if search wasn't re-done this session)
     const start = startSearch.getSelected() || savedRoute?.start || null;
     const end   = endSearch.getSelected()   || savedRoute?.end   || null;
-    if (start && end) _saveRoute({ start, end });
+
+    if (start && end) {
+      const submitBtn = form.querySelector('[type=submit]');
+      submitBtn.textContent = '경로 계산 중… 🗺';
+      submitBtn.disabled = true;
+
+      try {
+        const routePoints = await fetchPedestrianRoute(start, end);
+        _saveRoute({ start, end, points: routePoints });
+      } catch {
+        _saveRoute({ start, end, points: null }); // falls back to straight line
+      }
+
+      submitBtn.textContent = '🚶 등교 시작하기 →';
+      submitBtn.disabled = false;
+    }
 
     _showPermissionModal();
   });
@@ -179,10 +194,10 @@ async function _mountMap() {
   if (!_mapInitialized) {
     _mapInitialized = true;
 
-    // Apply saved route coords if available
+    // Apply saved route — real Tmap points if available, else straight-line fallback
     const savedRoute = _loadRoute();
     if (savedRoute?.start && savedRoute?.end) {
-      setRouteCoords(savedRoute.start, savedRoute.end);
+      setRouteCoords(savedRoute.start, savedRoute.end, savedRoute.points || null);
     }
 
     // Generate danger zones along the actual route
